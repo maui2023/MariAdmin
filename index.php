@@ -56,6 +56,7 @@ $conn = new mysqli($_SESSION['host'], $_SESSION['user'], $_SESSION['pwd']);
 if ($conn->connect_error) die("Connection failed: " . $conn->connect_error);
 
 $sql = $_POST['sql'] ?? $_GET['sql'] ?? '';
+
 preg_match('/USE `([^`]+)`/i', $sql, $match);
 $currentDb = $match[1] ?? '';
 $_SESSION['last_table'] = $_GET['table'] ?? ($_SESSION['last_table'] ?? 'tablename');
@@ -86,12 +87,12 @@ if (!empty($sql) && !in_array($sql, $_SESSION['query_history'])) {
 <header class="navbar navbar-dark bg-primary px-3"><span class="navbar-brand mb-0 h1">MariAdmin v0.1</span></header>
 
 <div class="d-flex flex-column flex-md-row">
-  <div class="bg-secondary p-3 d-flex flex-column" style="width: 250px; min-height: 100vh;">
-    <button onclick="window.open('?phpinfo=1','PHPInfo','width=1024,height=768');" class="btn btn-info btn-sm mb-2">
+  <div class="bg-secondary p-3 d-flex flex-column" style="width: 250px; min-height: 90vh;">
+    <button onclick="window.open('?phpinfo=1','PHPInfo','width=100%,height=768');" class="btn btn-info btn-sm mb-2">
       PHP Info
     </button>
     <hr>
-    <a href="?sql=CREATE+DATABASE+databasename;" class="btn btn-success btn-sm mb-3">Home</a>
+    <a href="#" onclick="presetSQL('CREATE DATABASE databasename;')" class="btn btn-success btn-sm mb-3">Home</a>
     <a href="?logout=1" class="btn btn-danger btn-sm mb-3">Logout</a>
     <h5 class="text-white">Databases</h5>
     <ul class="nav flex-column">
@@ -228,6 +229,15 @@ function insertTemplate(action) {
   textarea.value = `USE \`${db}\`;\n${sql}`;
   textarea.focus();
 }
+
+function presetSQL(query) {
+  const textarea = document.querySelector('textarea[name="sql"]');
+  if (textarea) {
+    textarea.value = query;
+    textarea.focus();
+  }
+}
 </script>
+
 </body>
 </html>
